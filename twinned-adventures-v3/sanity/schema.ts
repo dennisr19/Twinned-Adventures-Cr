@@ -1,0 +1,178 @@
+import { defineType, defineField, type Rule } from "sanity";
+const field = (
+	name: string,
+	type = "string",
+	extra: Record<string, unknown> = {},
+) => defineField({ name, title: name, type, ...extra });
+const localized = (name: string) =>
+	field(name, "object", { fields: [field("es", "text"), field("en", "text")] });
+export const schemaTypes = [
+	defineType({
+		name: "tour",
+		title: "Tour y contenido público",
+		type: "document",
+		fields: [
+			localized("title"),
+			localized("description"),
+			field("price", "number"),
+			field("duration"),
+			field("difficulty"),
+			field("minimumAge", "number"),
+			field("capacity", "number"),
+			field("availableSpaces", "number"),
+			field("schedules", "array", { of: [{ type: "string" }] }),
+			localized("meetingPoint"),
+			localized("physicalRequirements"),
+			localized("weatherConditions"),
+			localized("cancellationPolicy"),
+			field("included", "array", {
+				of: [{ type: "object", fields: [localized("label")] }],
+			}),
+			field("excluded", "array", {
+				of: [{ type: "object", fields: [localized("label")] }],
+			}),
+			field("itinerary", "array", {
+				of: [
+					{
+						type: "object",
+						fields: [localized("title"), localized("description")],
+					},
+				],
+			}),
+			field("gallery", "array", {
+				of: [
+					{
+						type: "image",
+						options: { hotspot: true },
+						fields: [localized("alt")],
+					},
+				],
+			}),
+			field("heroVideo", "file"),
+			field("mobileHeroVideo", "file"),
+			field("promotionalVideo", "file"),
+			field("heroPoster", "image"),
+			localized("heroTitle"),
+			localized("heroSubtitle"),
+		],
+	}),
+	defineType({
+		name: "siteSettings",
+		title: "Contacto, textos y políticas",
+		type: "document",
+		fields: [
+			field("companyName"),
+			field("whatsapp"),
+			field("phone"),
+			field("email"),
+			localized("address"),
+			localized("officeHours"),
+			field("mapUrl", "url"),
+			field("socialLinks", "array", { of: [{ type: "url" }] }),
+			localized("privacy"),
+			localized("terms"),
+			localized("cancellations"),
+			localized("finalCta"),
+		],
+	}),
+	defineType({
+		name: "guide",
+		title: "Guías",
+		type: "document",
+		fields: [
+			field("name"),
+			field("photo", "image"),
+			localized("bio"),
+			field("certifications", "array", { of: [{ type: "string" }] }),
+			field("approved", "boolean"),
+		],
+	}),
+	defineType({
+		name: "faq",
+		title: "Preguntas frecuentes",
+		type: "document",
+		fields: [
+			localized("question"),
+			localized("answer"),
+			field("order", "number"),
+		],
+	}),
+	defineType({
+		name: "booking",
+		title: "Reservaciones privadas",
+		type: "document",
+		fields: [
+			field("code"),
+			field("name"),
+			field("email"),
+			field("phone"),
+			field("country"),
+			field("date", "date"),
+			field("time"),
+			field("adults", "number"),
+			field("minors", "number"),
+			field("ages"),
+			field("pickup"),
+			field("needs", "text"),
+			field("message", "text"),
+			field("pricePerPerson", "number"),
+			field("currency"),
+			field("status", "string", {
+				options: {
+					list: [
+						"received",
+						"pending",
+						"confirmed",
+						"payment_pending",
+						"paid",
+						"completed",
+						"cancelled",
+					],
+				},
+			}),
+			field("lang"),
+			field("createdAt", "datetime"),
+			field("consentAt", "datetime"),
+		],
+	}),
+	defineType({
+		name: "reviewSubmission",
+		title: "Opiniones privadas · moderación",
+		type: "document",
+		fields: [
+			field("name"),
+			field("email"),
+			field("country"),
+			field("experienceDate", "date"),
+			field("rating", "number", {
+				validation: (rule: Rule) => rule.min(1).max(5),
+			}),
+			field("message", "text"),
+			field("photo", "image"),
+			field("booking", "reference", { to: [{ type: "booking" }] }),
+			field("status", "string", {
+				options: { list: ["pending", "approved", "rejected"] },
+			}),
+			field("verified", "boolean"),
+			field("featured", "boolean"),
+			field("response", "text"),
+			field("createdAt", "datetime"),
+			field("consentAt", "datetime"),
+		],
+	}),
+	defineType({
+		name: "inquiry",
+		title: "Consultas privadas",
+		type: "document",
+		fields: [
+			field("name"),
+			field("email"),
+			field("message", "text"),
+			field("booking", "reference", { to: [{ type: "booking" }] }),
+			field("status"),
+			field("lang"),
+			field("createdAt", "datetime"),
+			field("consentAt", "datetime"),
+		],
+	}),
+];

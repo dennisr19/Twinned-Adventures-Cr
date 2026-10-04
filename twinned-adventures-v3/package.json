@@ -1,0 +1,29 @@
+{
+  "name": "twinned-adventures",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "format": "biome format --write .",
+    "studio": "sanity dev",
+    "deploy": "npm run build && wrangler pages deploy dist"
+  },
+  "dependencies": {
+    "astro": "^7.3.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "tailwindcss": "^4.1.0",
+    "daisyui": "^5.0.0",
+    "sanity": "^4.0.0",
+    "@sanity/vision": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@astrojs/check": "^0.9.0",
+    "@biomejs/biome": "^2.0.0",
+    "wrangler": "^4.0.0"
+  }
+}

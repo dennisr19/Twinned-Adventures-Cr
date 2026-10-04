@@ -1,0 +1,5 @@
+---
+import Page from "../../components/Page.astro";
+export function getStaticPaths(){return ["es","en"].map(lang=>({params:{lang}}))}
+---
+<Page lang={Astro.params.lang}/>

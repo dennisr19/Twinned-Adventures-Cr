@@ -1,0 +1,12 @@
+---
+const { t, kind = 'booking' } = Astro.props;
+const fields = kind === 'booking' ? ['name','email','phone','country','date','time','adults','minors','ages','pickup','needs','message'] : kind === 'tracking' ? ['code','email'] : kind === 'review' ? ['name','email','country','date','code','rating','message'] : ['name','email','code','message'];
+---
+<form data-kind={kind} data-lang={t.lang} class="form-grid">
+<input type="text" name="website" tabindex="-1" autocomplete="off" class="honey" aria-hidden="true" />
+{fields.map(key => <label class:list={[['message','needs'].includes(key) && 'wide']}><span>{t.form[key]}</span>{['message','needs'].includes(key) ? <textarea class="textarea" name={key} rows="3" maxlength="2000" required={key === 'message' && kind !== 'booking'}></textarea> : key === 'rating' ? <select class="select" name="rating" required><option value="">—</option>{[5,4,3,2,1].map(n=><option value={n}>{n} ★</option>)}</select> : <input class="input" name={key} type={key === 'email' ? 'email' : key === 'date' ? 'date' : ['adults','minors'].includes(key) ? 'number' : key === 'phone' ? 'tel' : 'text'} min={key==='adults'?1:0} max={50} maxlength="200" value={key==='adults'?1:key==='minors'?0:undefined} required={!['pickup','needs','message','code'].includes(key) || key==='code' && ['tracking','review'].includes(kind)} />}</label>)}
+{kind !== 'tracking' && <label class="check wide"><input type="checkbox" name="consent" required /><span>{kind==='review'?t.form.publish:t.form.consent} <a href={`/${t.lang}/policies/`}>{t.legal[0]}</a></span></label>}
+{import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && <div class="cf-turnstile wide" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}></div>}
+<button class="btn btn-primary wide" type="submit">{kind==='booking'?t.form.submit:kind==='tracking'?t.form.track:kind==='review'?t.form.review:t.form.send} ↗</button>
+<p class="form-status wide" role="status" aria-live="polite"></p>
+</form>
